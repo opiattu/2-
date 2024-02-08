@@ -1,0 +1,61 @@
+#include <string>
+#include <clocale>
+#include <cmath>
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    setlocale(LC_ALL, "Russian");
+
+    std::string number; // число
+    std::cout << "Введите число:\n";
+    std::cin >> number;
+
+    int osnovanie_do; // система счисления текущего числа
+    cout << "Введите основание текущего числа:\n";
+    cin >> osnovanie_do;
+    if (osnovanie_do < 2 || osnovanie_do > 64) {
+        cout << "Система счисления должна быть в диапазоне от 2 до 64." << endl;
+        return 1;
+    } 
+
+
+    int osnovanie_pocle; // система счисления, в которую нужно перевести
+    cout << "Введите в какую систему счисления нужно перевести введенное число:\n";
+    cin >> osnovanie_pocle;
+    if (osnovanie_pocle < 2 || osnovanie_pocle > 64) {
+        cout << "Система счисления должна быть в диапазоне от 2 до 64." << endl;
+        return 1;
+    }
+
+    // "алфавит"
+    const std::string base = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/";
+     
+    // Проверка на возможность перевода
+    for (char q : number) {
+        if (base.find(q) >= osnovanie_do) {
+            std::cout << "Число невозможно перевести в выбранную систему счисления." << std::endl;
+            return 1;
+        }
+    }
+ 
+    // перевод в 10
+    int a = 0;
+    for (char q : number) {
+        int b = base.find(q);
+        a = a * osnovanie_do + b;
+    }
+    
+    // перевод в указанную
+    std::string result;
+    while (a > 0) {
+        int c = a % osnovanie_pocle;
+        result = base[c] + result;
+        a /= osnovanie_pocle;
+    }
+
+    std::cout << "Результат перевода: " << result << std::endl;
+    return 0;
+}
