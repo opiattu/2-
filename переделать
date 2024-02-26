@@ -1,0 +1,69 @@
+#include <clocale>
+#include <iostream>
+#include <vector>
+#include <limits>
+#include <random>
+
+using namespace std;
+
+void bubbleSort(vector< long long int>& vec) { // функция прямая сортировка
+    int n = vec.size();
+    bool swapped;
+    for (int i = 0; i < n - 1; i++) {
+        swapped = false;
+        for (int j = 0; j < n - i - 1; j++) {
+            if (vec[j] > vec[j + 1]) {
+                swap(vec[j], vec[j + 1]);
+                swapped = true;
+            }
+        }
+        if (!swapped) {
+            break;
+        }
+    }
+}
+
+int main() {
+    setlocale(LC_ALL, "Russian");
+
+    int n;
+    cout << "Введите кол-во элементов последовательности (кол-во случайных чисел): ";
+    cin >> n;
+    
+  
+    std::vector<long long int> vec; 
+    for (int i=0; i <n; ++i){
+        cout << rand() << " ";
+    }
+    
+    int v;
+    cout <<"Хотители Вы посмотреть последовательность до сортировки? - да (1),- нет(0)\n";
+    cin >> v;
+    
+    if (v==1) {
+    cout << "Вот как выглядит последовательность до сортировки:\n";
+    for (int i = 0; i < n; i++) {
+        cout << vec[i] << " ";
+    }
+}
+    int t;
+    cout << "Какую вы хотите видеть сортировку по - убыванию (0) или - возрастанию (1)?" ;
+    cin >> t;
+    
+    bubbleSort(vec);
+    
+    if (t==1) {
+    cout << "\nВот как выглядит последовательность после сортировки по возрастанию :\n";
+    for (int i = 0; i < n; i++) {
+        cout << vec[i] << " ";
+        }
+    }
+     if (t==0) {
+    cout << "\nВот как выглядит последовательность после сортировки по убыванию :\n";
+    for (int i = vec.size() - 1; i >= 0; i--) {
+    cout << vec[i] << " "; 
+    }
+}
+
+    return 0;
+}
