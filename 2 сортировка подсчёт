@@ -1,0 +1,95 @@
+#include <clocale>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int partition(vector<int>& vec, int left, int right) { // сортировка подчёт
+    int pivotIndex = left + (right - left) / 2;
+    int pivotValue = vec[pivotIndex];
+    int i = left, j = right;
+    int temp;
+    while (i <= j) {
+        while (vec[i] < pivotValue) {
+            i++;
+        }
+        while (vec[j] > pivotValue) {
+            j--;
+        }
+        if (i <= j) {
+            temp = vec[i];
+            vec[i] = vec[j];
+            vec[j] = temp;
+            i++;
+            j--;
+        }
+    }
+    return i;
+}
+
+void quickSort(vector<int>& vec, int left, int right) {
+    if (left < right) {
+        int index = partition(vec, left, right);
+        quickSort(vec, left, index - 1);
+        quickSort(vec, index, right);
+    }
+}
+
+int main() {
+    setlocale(LC_ALL, "Russian");
+
+    srand(time(0));
+    
+    int n;
+    cout << "Введите кол-во элементов последовательности (кол-во случайных чисел): ";
+    cin >> n;
+    
+    vector<int> vec;
+    // Генерация случайных чисел и добавление их в вектор
+    for (int i = 0; i < n; i++) {
+        vec.push_back(rand() % 2001 - 1000); // генерация случайного числа от -1000 до 1000
+    }
+    
+    int v;
+    cout << "Хотите ли Вы посмотреть последовательность до сортировки? - да (1), - нет (0)\n";
+    cin >> v;
+    
+    // Вывод последовательности до сортировки
+    if (v == 1) {
+        cout << "Вот как выглядит последовательность до сортировки:\n";
+        for (int i = 0; i < n; i++) {
+            cout.width(7); // установка ширины столбца
+            cout << vec[i];
+        }
+        cout << endl;
+    }
+
+    int t;
+    cout << "Какую вы хотите видеть сортировку: убывание (0) или возрастание (1)? ";
+    cin >> t;
+    
+    // Сортировка массива
+    quickSort(vec, 0, vec.size() - 1);
+
+    // Вывод отсортированной последовательности
+    if (t == 1) {
+        cout << "\nВот как выглядит последовательность после сортировки по возрастанию:\n";
+        for (int i = 0; i < vec.size(); i++) {
+            cout.width(7); // установка ширины столбца
+            cout << vec[i] << " ";
+        }
+        cout << endl;
+    }
+    
+    // Вывод отсортированной последовательности по убыванию
+    if (t == 0) {
+        cout << "\nВот как выглядит последовательность после сортировки по убыванию:\n";
+        for (int i = vec.size() - 1; i >= 0; i--) {
+            cout.width(7);
+            cout << vec[i] << " ";
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
