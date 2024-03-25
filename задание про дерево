@@ -1,0 +1,38 @@
+#include <clocale>
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+int main()
+{
+    setlocale(LC_ALL, "Russian");
+    
+    srand(time(0));
+    
+    int N;
+    cout << "Введите количество чисел (N):";
+    cin >> N;
+    
+    int a;
+    cout << "Какие методом ввода Вы будете пользоваться 1 - ввод с клавиатуры, 0 - генерация случайным образом от 1 до N:";
+    cin >> a;
+    
+    if (a==0) {
+    vector <int> vec;
+    // Генерация случайных чисел и добавление их в вектор
+    for (int i = 0; i < N; i++) {
+        vec.push_back(rand() % N); 
+        }
+    }
+    
+    if (a==1) {
+        vector <int> vec;
+        cout << "Введите числа:";
+        cin >> vec;
+    }
+    
+    return 0;
+}
