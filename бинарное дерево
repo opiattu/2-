@@ -1,0 +1,109 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+// Структура узла дерева
+struct Node {
+    int value;
+    Node* left;
+    Node* right;
+
+    Node(int value) : value(value), left(nullptr), right(nullptr) {}
+};
+
+// Функция вставки элемента в дерево
+Node* insert(Node* root, int value) {
+    // Если дерево пустое, создаем корневой узел со значением value
+    if (root == nullptr) {
+        return new Node(value);
+    }
+
+    // Если value равно значению корневого узла, создаем новый узел со значением value и вставляем его в качестве левого потомка корневого узла
+    if (value == root->value) {
+        root->left = new Node(value);
+        return root;
+    }
+    // Если value меньше значения корневого узла, вставляем в левое поддерево
+    else if (value < root->value) {
+        root->left = insert(root->left, value);
+    }
+    // Иначе вставляем в правое поддерево
+    else {
+        root->right = insert(root->right, value);
+    }
+
+    // Возвращаем корневой узел дерева
+    return root;
+}
+
+// Функция печати дерева
+void print_tree(Node* root, int level) {
+    // Если узел пустой, ничего не делаем
+    if (root == nullptr) {
+        return;
+    }
+
+    // Добавляем отступы для текущего уровня
+    for (int i = 0; i < level; i++) {
+        cout << "  ";
+    }
+    // Печатаем значение узла
+    cout << root->value << endl;
+
+    // Рекурсивно печатаем левое и правое поддеревья
+    print_tree(root->left, level + 1);
+    print_tree(root->right, level + 1);
+}
+
+int main() {
+    // Переменная для хранения количества чисел
+    int n;
+    // Запрашиваем у пользователя количество чисел
+    cout << "Введите количество чисел: ";
+    cin >> n;
+
+    // Переменная для хранения метода ввода
+    int method;
+    // Запрашиваем у пользователя метод ввода
+    cout << "Введите метод ввода чисел (1 - ручной ввод, 2 - случайная генерация): ";
+    cin >> method;
+
+    // Вектор для хранения чисел
+    vector<int> numbers;
+    // Если выбран ручной ввод, запрашиваем числа у пользователя
+    if (method == 1) {
+        cout << "Введите " << n << " чисел: ";
+        for (int i = 0; i < n; i++) {
+            int number;
+            cin >> number;
+            numbers.push_back(number);
+        }
+    } 
+    // Если выбрана случайная генерация, генерируем числа случайным образом
+    else if (method == 2) {
+        srand(time(nullptr));
+        for (int i = 0; i < n; i++) {
+            int number = rand() % n + 1;
+            numbers.push_back(number);
+        }
+    } 
+    // Если выбран неверный метод ввода, выводим сообщение об ошибке
+    else {
+        cout << "Неверный метод ввода." << endl;
+        return 1;
+    }
+
+    // Создаем корневой узел дерева со значением первого элемента вектора
+    Node* root = nullptr;
+    // Вставляем остальные элементы вектора в дерево
+    for (int i = 0; i < numbers.size(); i++) {
+        root = insert(root, numbers[i]);
+    }
+
+    // Печатаем построенное дерево
+    cout << "Построенное бинарное дерево:" << endl;
+    print_tree(root, 0);
+
+    return 0;
+}
