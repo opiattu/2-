@@ -1,0 +1,87 @@
+#include <iostream>
+#include <string>
+#include <cmath>
+
+using namespace std;
+
+// Функция для проверки корректности ввода числа в определенной системе счисления
+bool isValidNumber(const string& number, int base) {
+    string validChars = "0123456789ABCDEF";
+    for (char digit : number) {
+        if (validChars.find(digit) == string::npos || digit >= validChars[base]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Функция для перевода числа из одной системы счисления в десятичную
+int convertToDecimal(const string& number, int base) {
+    int decimal = 0;
+    int power = 0;
+    for (int i = number.size() - 1; i >= 0; --i) {
+        int digit;
+        if (isdigit(number[i])) {
+            digit = number[i] - '0';
+        } else {
+            digit = toupper(number[i]) - 'A' + 10;
+        }
+        decimal += digit * pow(base, power);
+        ++power;
+    }
+    return decimal;
+}
+
+// Функция для перевода числа из десятичной системы в другую
+string convertFromDecimal(int decimal, int base) {
+    string result = "";
+    while (decimal > 0) {
+        int remainder = decimal % base;
+        char digit;
+        if (remainder < 10) {
+            digit = remainder + '0';
+        } else {
+            digit = remainder - 10 + 'A';
+        }
+        result = digit + result;
+        decimal /= base;
+    }
+    return result;
+}
+
+int main() {
+    int base;
+    cout << "Введите систему счисления (от 2 до 16): ";
+    cin >> base;
+
+    if (base < 2 || base > 16) {
+        cout << "Ошибка: система счисления должна быть от 2 до 16." << endl;
+        return 1;
+    }
+
+    string number;
+    cout << "Введите число в системе счисления " << base << ": ";
+    cin >> number;
+
+    if (!isValidNumber(number, base)) {
+        cout << "Ошибка: введено некорректное число для выбранной системы счисления." << endl;
+        return 1;
+    }
+
+    int decimalNumber = convertToDecimal(number, base);
+    cout << "Число в десятичной системе: " << decimalNumber << endl;
+
+    cout << "Введите целевую систему счисления для конвертации (от 2 до 16): ";
+    int targetBase;
+    cin >> targetBase;
+
+    if (targetBase < 2 || targetBase > 16) {
+        cout << "Ошибка: целевая система счисления должна быть от 2 до 16." << endl;
+        return 1;
+    }
+
+    string result = convertFromDecimal(decimalNumber, targetBase);
+    cout << "Число в системе счисления " << targetBase << ": " << result << endl;
+
+    return 0;
+}
