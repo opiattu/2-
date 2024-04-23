@@ -25,6 +25,10 @@ Money add_pence(const Money& money, int pence) {
         result.pence -= 12;
         result.shillings++;
     }
+    while (result.shillings >= 20) {
+        result.shillings -= 20;
+        result.pounds++;
+    }
     return result;
 }
 
@@ -46,14 +50,38 @@ Money add_pounds(const Money& money, int pounds) {
     return result;
 }
 
-// Сложения двух денежных сумм
+// Сложение двух денежных сумм
 Money add(const Money& a, const Money& b) {
-    return add_pence(add_shillings(add_pounds(a, b.pounds), b.shillings), b.pence);
+    Money result;
+    result.pounds = a.pounds + b.pounds;
+    result.shillings = a.shillings + b.shillings;
+    result.pence = a.pence + b.pence;
+    while (result.pence >= 12) {
+        result.pence -= 12;
+        result.shillings++;
+    }
+    while (result.shillings >= 20) {
+        result.shillings -= 20;
+        result.pounds++;
+    }
+    return result;
 }
 
-// Вычисления разности денежных сумм
+// Вычисление разности двух денежных сумм
 Money subtract(const Money& a, const Money& b) {
-    return add_pence(add_shillings(add_pounds(a, -b.pounds), -b.shillings), -b.pence);
+    Money result;
+    result.pounds = a.pounds - b.pounds;
+    result.shillings = a.shillings - b.shillings;
+    result.pence = a.pence - b.pence;
+    while (result.pence < 0) {
+        result.pence += 12;
+        result.shillings--;
+    }
+    while (result.shillings < 0) {
+        result.shillings += 20;
+        result.pounds--;
+    }
+    return result;
 }
 
 // Перевод денежной суммы в пенсы
@@ -61,9 +89,23 @@ int to_pence(const Money& money) {
     return money.pounds * 240 + money.shillings * 12 + money.pence;
 }
 
-// Вывод денежной суммы в формате «99–99–99»
+// Вывод денежной суммы в формате "99-99-99"
 void print(const Money& money) {
     cout << money.pounds << "-" << money.shillings << "-" << money.pence << endl;
+}
+
+// Вывод разности двух денежных сумм
+void print_difference(const Money& a, const Money& b) {
+    Money result = subtract(a, b);
+    cout << "Разность: ";
+    print(result);
+}
+
+// Вывод суммы двух денежных сумм
+void print_sum(const Money& a, const Money& b) {
+    Money result = add(a, b);
+    cout << "Сумма: ";
+    print(result);
 }
 
 int main() {
@@ -103,21 +145,18 @@ int main() {
         for (int j = i + 1; j < n; j++) {
             int diff = abs(to_pence(sums[i]) - to_pence(sums[j]));
 
-            // Поиск наиболее близкой пары
             if (!closest_found && diff < min_diff) {
                 min_diff = diff;
                 closest_pair = {i, j};
                 closest_found = true;
             }
 
-            // Поиск наиболее далекой пары
             if (!farthest_found && diff > max_diff) {
                 max_diff = diff;
                 farthest_pair = {i, j};
                 farthest_found = true;
             }
 
-            // Прерывание цикла, если обе пары найдены
             if (closest_found && farthest_found) {
                 break;
             }
@@ -131,5 +170,13 @@ int main() {
     cout << "Наиболее далекая пара сумм: ";
     print(sums[farthest_pair.second]);
 
-    return 0;
+    // Вывод разности и суммы двух денежных сумм
+    Money money1 = {10, 5, 8};
+    Money money2 = {5, 2, 4};
+
+    print_difference(money1, money2);
+    print_sum(money1, money2);
+
+   return 0;
+    
 }
