@@ -81,21 +81,17 @@ int main() {
         root = insert(root, numbers[i]);
     }
 
-    // Определяем имя файла для вывода дерева
     string filename = "derevo.txt";
 
-    // Открываем файл для записи
     ofstream outputFile(filename);
     if (!outputFile.is_open()) {
         cout << "Ошибка открытия файла." << endl;
         return 1;
     }
 
-    // Печатаем построенное дерево в файл
     outputFile << "Построенное бинарное дерево:" << endl;
     print_tree_to_file(root, 0, outputFile);
 
-    // Закрываем файл
     outputFile.close();
 
     cout << "Дерево успешно записано в файл " << filename << endl;
