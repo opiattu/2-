@@ -1,0 +1,104 @@
+#include <iostream>
+#include <fstream>
+#include <map>
+#include <vector>
+#include <queue>
+#include <functional>
+
+using namespace std;
+
+// Определение структуры узла
+struct Node {
+    char symbol;
+    unsigned frequency;
+    Node *left, *right;
+
+    Node(char symbol, unsigned frequency) : symbol(symbol), frequency(frequency), left(nullptr), right(nullptr) {}
+};
+
+// Функция для сравнения двух узлов
+struct CompareNodes {
+    bool operator()(const Node* l, const Node* r) {
+        return l->frequency > r->frequency;
+    }
+};
+
+// Функция для построения дерева Хаффмана
+Node* BuildHuffmanTree(const string &text) {
+    map<char, unsigned> frequencies;
+    for (char ch : text) {
+        frequencies[ch]++;
+    }
+
+    priority_queue<Node*, vector<Node*>, CompareNodes> pq;
+
+    for (auto pair : frequencies) {
+        pq.push(new Node(pair.first, pair.second));
+    }
+
+    while (pq.size() > 1) {
+        Node *left = pq.top(); pq.pop();
+        Node *right = pq.top(); pq.pop();
+
+        Node *sum = new Node('\0', left->frequency + right->frequency);
+        sum->left = left;
+        sum->right = right;
+        pq.push(sum);
+    }
+
+    return pq.top();
+}
+
+// Функция для генерации кодов Хаффмана
+void GenerateHuffmanCodes(const Node* node, map<char, string> &codes, string code = "") {
+    if (!node) return;
+
+    if (node->symbol != '\0') {
+        codes[node->symbol] = code;
+    }
+    if (node->left) GenerateHuffmanCodes(node->left, codes, code + "0");
+    if (node->right) GenerateHuffmanCodes(node->right, codes, code + "1");
+}
+
+// Функция для печати дерева Хаффмана и кодов в консоль
+void PrintHuffmanTree(const Node *node, const map<char, string> &codes, string indent = "", bool last = true) {
+    if (node != nullptr) {
+        cout << indent;
+        if (last) {
+            cout << "└── ";
+            indent += "    ";
+        } else {
+            cout << "├── ";
+            indent += "|   ";
+        }
+
+        if (node->symbol != '\0') {
+            cout << node->symbol << " (" << node->frequency << ") : " << codes.at(node->symbol) << endl;
+        } else {
+            cout << "* (" << node->frequency << ")" << endl;
+        }
+
+        PrintHuffmanTree(node->left, codes, indent, false);
+        PrintHuffmanTree(node->right, codes, indent, true);
+    }
+}
+
+int main() {
+    setlocale(LC_ALL, "Russian");
+    string text;
+    cout << "Введите текст для кодирования: ";
+    getline(cin, text);
+
+    Node *root = BuildHuffmanTree(text);
+    map<char, string> huffmanCodes;
+    GenerateHuffmanCodes(root, huffmanCodes);
+
+    cout << "Структура дерева Хаффмана:" << endl;
+    PrintHuffmanTree(root, huffmanCodes);
+
+    cout << "Коды Хаффмана для символов:" << endl;
+    for (auto code : huffmanCodes) {
+        cout << code.first << " : " << code.second << endl;
+    }
+    return 0;
+}
